@@ -2,6 +2,17 @@
 <head>
   <title>haxmsg</title>
   <script src="lib/peerjs.min.js"></script>
+
+  <style>
+    body {
+      font-family: monospace;
+    }
+
+    textarea {
+      resize: none;
+    }
+  </style>
+
 </head>
 <body>
   <h1>Your ID: <span id="my_id"></span></h1> 
@@ -9,6 +20,11 @@
   <p>Reciever ID:</p>
   <input type="text" id="reciever-id">
   <button id="connection-confirmed" onclick="connect()">Connect</button>
+  </br>
+  </br>
+  </br>
+
+  <textarea rows="20" cols="50" wrap="hard" readonly></textarea>
 
   <script>
     var peer = new Peer();
