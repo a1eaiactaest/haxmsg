@@ -1,0 +1,31 @@
+<html>
+<head>
+  <title>haxmsg</title>
+  <script src="lib/peerjs.min.js"></script>
+</head>
+<body>
+  <h1>Your ID: <span id="my_id"></span></h1> 
+  
+  <p>Reciever ID:</p>
+  <input type="text" id="reciever-id">
+  <button id="connection-confirmed" onclick="connect()">Connect</button>
+
+  <script>
+    var peer = new Peer();
+
+    peer.on('open', function(id){
+      document.getElementById("my_id").innerHTML = id; 
+    });
+
+    function connect(){
+      var reciever_id = document.getElementById('reciever-id').value;
+      var conn = peer.connect(reciever_id);
+    }
+
+
+  </script>
+</body>
+</html>
+
+
+
