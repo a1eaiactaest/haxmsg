@@ -63,7 +63,7 @@
         conn.close();
       }
 
-      conn = peer.connect(peersID.value);
+      conn = peer.connect(peersID.value, {reliable: true});
       conn.on('open', function(){
         current_status.innerHTML = "Connected to " + conn.peer;
       });
