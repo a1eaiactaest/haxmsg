@@ -32,7 +32,7 @@
 
   <script type="text/javascript">
     let conn = null;
-    let peer = new Peer();
+    let peer = new Peer(null, {debug: 2});
 
     let current_status = document.getElementById('status');
     let chat = document.getElementById('chat');
