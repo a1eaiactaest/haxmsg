@@ -1,0 +1,101 @@
+<html>
+<!-- Recieve -->
+<head>
+  <title>haxmsg</title>
+  <script src="lib/peerjs.min.js"></script>
+
+  <style>
+    body {
+      font-family: monospace;
+    }
+
+    textarea {
+      resize: none;
+    }
+  </style>
+</head>
+<body>
+  <h1>haxmsg</h1>
+
+  <input type="text" id="reciever-id" placeholder="your friend's ID..." autofocus="true" autocomplete="off">
+  <button type="button" id="connect-button">Connect</button>
+
+  <p><b>Status: </b><span id="status"></span></p>
+  
+  <textarea rows="20" cols="50" wrap="hard" id="chat" readonly></textarea>
+
+  </br>
+  </br>
+
+  <input type="text" id="message" placeholder="haxmsg..." autocomplete="off">
+  <button id="send-message">Send</button>
+
+  <script type="text/javascript">
+    let conn = null;
+    let peer = new Peer();
+
+    let current_status = document.getElementById('status');
+    let chat = document.getElementById('chat');
+    let message_box = document.getElementById('message');
+    let send_button = document.getElementById('send-message');
+    let connect_button = document.getElementById('connect-button');
+    let peersID = document.getElementById('reciever-id');
+
+    peer.on('open', function(id){
+      current_status.innerHTML = 'Waiting for connection...';
+    });
+
+    peer.on('connection', function(c){
+      c.on('open', function(){
+        c.send("You are trying to connect with sender client, switch to reciever");
+        c.close()
+      });
+    });
+    
+    peer.on('error', function(err){
+      console.log(err);
+      alert(err);
+    });
+
+
+    function connect(){
+      if (conn){
+        conn.close();
+      }
+
+      conn = peer.connect(peersID.value);
+      conn.on('open', function(){
+        current_status.innerHTML = "Connected to " + conn.peer;
+      });
+
+      conn.on('data', function(data){
+        handle_message(data); 
+      });
+
+      conn.on('close', function(){
+        current_status.innerHTML = 'Connection closed, waiting for connection...';
+        conn = null;
+      });
+    }
+
+    // TODO: clear chat box
+    function handle_message(raw_msg){
+      chat.innerHTML += 'Guest: ' + raw_msg + "\n"; 
+    }
+    
+    send_button.addEventListener('click', function(){
+      if (conn && conn.open){
+        let message = message_box.value;
+        message_box.value = ''; 
+        conn.send(message); 
+        chat.innerHTML += 'You: ' + message + "\n";
+        console.log('Sent: ' + message);
+      } else {
+        console.log('Can\'t send message, connection closed');
+      }
+    });
+
+    connect_button.addEventListener('click', connect);
+  </script>
+</body>
+</html>

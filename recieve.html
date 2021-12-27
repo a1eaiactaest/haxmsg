@@ -1,0 +1,92 @@
+<html>
+<!-- Answer -->
+<head>
+  <title>haxmsg</title>
+  <script src="lib/peerjs.min.js"></script>
+
+  <style>
+    body {
+      font-family: monospace;
+    }
+
+    textarea {
+      resize: none;
+    }
+  </style>
+
+</head>
+<body>
+  <h1>haxmsg</h1>
+  <h3>Your ID: <span id="my_id"></span></h3> 
+  <h3>Share it with your friend!</h3>
+
+  <p><b>Status: </b><span id="status"></span></p>
+  
+  <textarea rows="20" cols="50" wrap="hard" id="chat" readonly></textarea>
+
+  </br>
+  </br>
+
+  <input type="text" id="message" placeholder="haxmsg..." autofocus="true" autocomplete="off">
+  <button id="send-message">Send</button>
+
+  <script type="text/javascript">
+    let conn = null;
+    let peer = new Peer();
+
+    let myID  = document.getElementById('my_id');
+    let current_status = document.getElementById('status');
+    let chat = document.getElementById('chat');
+    let message_box = document.getElementById('message');
+    let send_button = document.getElementById('send-message');
+
+    peer.on('open', function(id){
+      myID.innerHTML = id
+      current_status.innerHTML = 'Waiting for connection...';
+    });
+
+    peer.on('connection', function(c){
+      conn = c;
+      console.log("Connected to: " + conn.peer);
+      current_status.innerHTML = "Connected";
+      connection_loop();
+    });
+    
+    peer.on('error', function(err){
+      console.log(err);
+    });
+
+    function connection_loop(){
+      conn.on('data', function(data){
+        console.log('recieved data'); 
+        handle_message(data);
+      });
+
+      conn.on('close', function(){
+        current_status.innerHTML = 'Connection closed, waiting for connection...';
+        conn = null;
+      });
+    }
+
+    // TODO: clear chat box
+    function handle_message(raw_msg){
+      chat.innerHTML += 'Guest: ' + raw_msg + "\n"; 
+    }
+    
+    send_button.addEventListener('click', function(){
+      if (conn && conn.open){
+        let message = message_box.value;
+        message_box.value = ''; 
+        conn.send(message); 
+        chat.innerHTML += 'You: ' + message + "\n";
+        console.log('Sent: ' + message);
+      } else {
+        console.log('Can\'t send message, connection closed');
+      }
+    });
+  </script>
+</body>
+</html>
+
+
+

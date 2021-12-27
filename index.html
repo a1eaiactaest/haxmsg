@@ -7,39 +7,14 @@
     body {
       font-family: monospace;
     }
-
-    textarea {
-      resize: none;
-    }
   </style>
 
 </head>
 <body>
-  <h1>Your ID: <span id="my_id"></span></h1> 
-  
-  <p>Reciever ID:</p>
-  <input type="text" id="reciever-id">
-  <button id="connection-confirmed" onclick="connect()">Connect</button>
+  <h1>haxmsg</h1>
+  <a href="recieve.html">recieve</a>
   </br>
-  </br>
-  </br>
-
-  <textarea rows="20" cols="50" wrap="hard" readonly></textarea>
-
-  <script>
-    var peer = new Peer();
-
-    peer.on('open', function(id){
-      document.getElementById("my_id").innerHTML = id; 
-    });
-
-    function connect(){
-      var reciever_id = document.getElementById('reciever-id').value;
-      var conn = peer.connect(reciever_id);
-    }
-
-
-  </script>
+  <a href="answer.html">answer</a>
 </body>
 </html>
 
