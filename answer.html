@@ -75,6 +75,7 @@
 
       conn.on('close', function(){
         current_status.innerHTML = 'Connection closed, waiting for connection...';
+        clear_chat();
         conn = null;
       });
     }
@@ -97,10 +98,14 @@
     send_button.addEventListener('click', function(){
       if (conn && conn.open){
         let message = message_box.value;
-        message_box.value = ''; 
-        conn.send(message); 
-        handle_message(message, "You");
-        console.log('Sent: ' + message);
+        if (!message.trim().length){
+          alert("can't send empty message!");
+        } else{
+          message_box.value = ''; 
+          conn.send(message); 
+          handle_message(message, "You");
+          console.log('Sent: ' + message);
+        }
       } else {
         console.log('Can\'t send message, connection closed');
       }
