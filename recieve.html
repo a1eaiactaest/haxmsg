@@ -49,6 +49,7 @@
       conn = c;
       console.log("Connected to: " + conn.peer);
       current_status.innerHTML = "Connected";
+      clear_chat();
       connection_loop();
     });
     
@@ -59,7 +60,7 @@
     function connection_loop(){
       conn.on('data', function(data){
         console.log('recieved data'); 
-        handle_message(data);
+        handle_message(data, "Guest");
       });
 
       conn.on('close', function(){
@@ -69,16 +70,25 @@
     }
 
     // TODO: clear chat box
-    function handle_message(raw_msg){
-      chat.innerHTML += 'Guest: ' + raw_msg + "\n"; 
+    function handle_message(raw_msg, source){
+      chat.innerHTML += source + ': '+ raw_msg + "\n"; 
     }
+
+    function clear_chat(){
+      chat.innerHTML = "";
+    }
+    message_box.addEventListener('keyup', function(event){
+      if (event.key === "Enter"){
+        send_button.click();
+      }
+    });
     
     send_button.addEventListener('click', function(){
       if (conn && conn.open){
         let message = message_box.value;
         message_box.value = ''; 
         conn.send(message); 
-        chat.innerHTML += 'You: ' + message + "\n";
+        handle_message(message, "You");
         console.log('Sent: ' + message);
       } else {
         console.log('Can\'t send message, connection closed');
